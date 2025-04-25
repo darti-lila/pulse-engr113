@@ -404,6 +404,7 @@
       "bus_entry_needed": "error",
       "bus_to_bus_conflict": "error",
       "bus_to_net_conflict": "error",
+      "conflicting_netclasses": "error",
       "different_unit_footprint": "error",
       "different_unit_net": "error",
       "duplicate_reference": "error",
@@ -611,6 +612,10 @@
     [
       "59caed24-c499-43df-90b9-3ac3a8609322",
       "Root"
+    ],
+    [
+      "69c6432a-9ad0-410c-a337-e39f30d289e6",
+      "Buck Converter"
     ]
   ],
   "text_variables": {}

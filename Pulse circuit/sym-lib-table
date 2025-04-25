@@ -4,4 +4,5 @@
   (lib (name "usini_sensors")(type "Legacy")(uri "${KIPRJMOD}/Circuit Libraries/usini_kicad_sensors-main/usini_kicad_sensors-main/usini_sensors.lib")(options "")(descr ""))
   (lib (name "Espressif")(type "KiCad")(uri "${KIPRJMOD}/Circuit Libraries/kicad-libraries-main/kicad-libraries-main/symbols/Espressif.kicad_sym")(options "")(descr ""))
   (lib (name "doit-esp32-devkit-v1")(type "Legacy")(uri "${KIPRJMOD}/Circuit Libraries/doit-esp32-devkit-kicad-master/doit-esp32-devkit-kicad-master/doit-esp32-devkit-v1.lib")(options "")(descr ""))
+  (lib (name "OLIMEX_IC")(type "Legacy")(uri "${KIPRJMOD}/Circuit Libraries/KiCad-Random-IC/OLIMEX_IC.lib")(options "")(descr ""))
 )
