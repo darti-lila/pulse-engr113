@@ -616,6 +616,10 @@
     [
       "69c6432a-9ad0-410c-a337-e39f30d289e6",
       "Buck Converter"
+    ],
+    [
+      "0afa37a8-64ca-4e6b-9013-61cb70edd3e2",
+      "New Buck Converter"
     ]
   ],
   "text_variables": {}
