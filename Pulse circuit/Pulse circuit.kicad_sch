@@ -2418,8 +2418,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
-			(at 62.484 74.168 0)
+		(property "Value" "10k"
+			(at 60.96 74.168 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2854,7 +2854,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "10k"
 			(at 100.33 74.9299 0)
 			(effects
 				(font
@@ -2923,8 +2923,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
-			(at 90.678 74.422 0)
+		(property "Value" "10k"
+			(at 88.646 74.676 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3374,7 +3374,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "10k"
 			(at 71.12 73.6599 0)
 			(effects
 				(font
