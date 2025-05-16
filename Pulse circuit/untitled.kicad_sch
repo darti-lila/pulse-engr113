@@ -2083,7 +2083,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "D"
+		(property "Value" "~"
 			(at 162.56 77.4699 90)
 			(effects
 				(font
