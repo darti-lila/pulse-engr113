@@ -1282,7 +1282,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "646b347d-bee3-4212-83a4-bb8fc3aed558")
-		(property "Reference" "D2"
+		(property "Reference" "D1"
 			(at 158.75 95.25 0)
 			(effects
 				(font
@@ -1352,7 +1352,7 @@
 		(instances
 			(project "Pulse circuit"
 				(path "/59caed24-c499-43df-90b9-3ac3a8609322/0afa37a8-64ca-4e6b-9013-61cb70edd3e2"
-					(reference "D2")
+					(reference "D1")
 					(unit 1)
 				)
 			)
@@ -1374,7 +1374,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "76b7fad9-d716-44b8-bbda-019b1ec1d064")
-		(property "Reference" "C9"
+		(property "Reference" "C3"
 			(at 203.2 83.8199 0)
 			(effects
 				(font
@@ -1428,7 +1428,7 @@
 		(instances
 			(project ""
 				(path "/59caed24-c499-43df-90b9-3ac3a8609322/0afa37a8-64ca-4e6b-9013-61cb70edd3e2"
-					(reference "C9")
+					(reference "C3")
 					(unit 1)
 				)
 			)
@@ -1444,7 +1444,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "7cd9986d-383a-4107-9ecb-f598658c9598")
-		(property "Reference" "C7"
+		(property "Reference" "C1"
 			(at 111.76 93.9799 0)
 			(effects
 				(font
@@ -1498,7 +1498,7 @@
 		(instances
 			(project "Pulse circuit"
 				(path "/59caed24-c499-43df-90b9-3ac3a8609322/0afa37a8-64ca-4e6b-9013-61cb70edd3e2"
-					(reference "C7")
+					(reference "C1")
 					(unit 1)
 				)
 			)
@@ -1590,7 +1590,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f99a1366-c78d-4a0a-a1db-95d3bf14dd42")
-		(property "Reference" "C8"
+		(property "Reference" "C7"
 			(at 163.83 85.0899 0)
 			(effects
 				(font
@@ -1644,7 +1644,7 @@
 		(instances
 			(project ""
 				(path "/59caed24-c499-43df-90b9-3ac3a8609322/0afa37a8-64ca-4e6b-9013-61cb70edd3e2"
-					(reference "C8")
+					(reference "C7")
 					(unit 1)
 				)
 			)

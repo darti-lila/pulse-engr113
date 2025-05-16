@@ -1943,7 +1943,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "NS"
 			(at 226.06 86.3599 0)
 			(effects
 				(font
@@ -2013,7 +2013,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "10uF"
 			(at 97.79 88.8999 0)
 			(effects
 				(font
@@ -2083,7 +2083,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "~"
+		(property "Value" "D"
 			(at 162.56 77.4699 90)
 			(effects
 				(font
@@ -2171,7 +2171,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "68.1kΩ"
 			(at 151.13 105.4099 0)
 			(effects
 				(font
@@ -2241,7 +2241,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "100nF"
 			(at 152.4 77.4699 0)
 			(effects
 				(font
@@ -2311,7 +2311,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "100kΩ"
 			(at 110.49 81.2799 0)
 			(effects
 				(font
@@ -2380,7 +2380,7 @@
 				)
 			)
 		)
-		(property "Value" "L"
+		(property "Value" "10uH"
 			(at 173.99 64.77 90)
 			(effects
 				(font
@@ -2449,7 +2449,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "22uF"
 			(at 214.63 86.3599 0)
 			(effects
 				(font
@@ -2519,7 +2519,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "220pF"
 			(at 152.4 96.5199 0)
 			(effects
 				(font
@@ -2681,7 +2681,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "40.2kΩ"
 			(at 194.31 99.0599 0)
 			(effects
 				(font
@@ -2751,7 +2751,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
+		(property "Value" "10uF"
 			(at 83.82 88.8999 0)
 			(effects
 				(font
@@ -2893,7 +2893,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "200kΩ"
 			(at 119.38 102.8699 0)
 			(effects
 				(font
@@ -2963,7 +2963,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "R"
+		(property "Value" "24.9kΩ"
 			(at 110.49 102.8699 0)
 			(effects
 				(font
