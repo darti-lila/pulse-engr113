@@ -1,131 +1,138 @@
-// Tinker Foundry
-// Accompanying video: https://youtu.be/xjwSKy6jzTI
-// Code for ESP32 to interface with MAX30102 breakout board and report blood oxygen level
-// Refer to https://github.com/DKARDU/bloodoxygen - below code is simplified version
-// https://www.analog.com/media/en/technical-documentation/data-sheets/MAX30102.pdf
-// Connections from WEMOS D1 R32 board to MAX30102 Breakout Board as follows:
-//  SCL (ESP32) to SCL (breakout board)
-//  SDA (ESP32) to SDA (breakout board)
-//  3V3 (ESP32) to VIN (breakout board)
-//  GND (ESP32) to GND (breakout board)
-
 #include <Wire.h>
-#include "MAX30105.h" //sparkfun MAX3010X library
+#include "MAX30105.h" // SparkFun MAX3010x library
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define OLED_RESET    -1
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
 MAX30105 particleSensor;
 
-double avered    = 0; 
-double aveir     = 0;
-double sumirrms  = 0;
+// Variables for calculation
+double avered = 0;
+double aveir = 0;
+double sumirrms = 0;
 double sumredrms = 0;
-int    i         = 0;
-int    Num       = 100;  // calculate SpO2 by this sampling interval
-int    Temperature;
-int    temp;
-float  ESpO2;            // initial value of estimated SpO2
-double FSpO2     = 0.7;  // filter factor for estimated SpO2
-double frate     = 0.95; // low pass filter for IR/red LED value to eliminate AC component
-#define TIMETOBOOT 3000  // wait for this time(msec) to output SpO2
-#define SCALE      88.0  // adjust to display heart beat and SpO2 in the same scale
-#define SAMPLING   100 //25 //5     // if you want to see heart beat more precisely, set SAMPLING to 1
-#define FINGER_ON 30000 // if red signal is lower than this, it indicates your finger is not on the sensor
+int i = 0;
+int Num = 100;  // Calculate SpO2 by this sampling interval
+float ESpO2 = 0;
+double FSpO2 = 0.7;  // Filter factor for estimated SpO2
+double frate = 0.95; // Low pass filter for IR/red LED value
+#define TIMETOBOOT 3000
+#define SCALE      88.0
+#define SAMPLING   100
+#define FINGER_ON  30000
 #define USEFIFO
 
-
-void setup()
-{
+void setup() {
   Serial.begin(115200);
-  Serial.setDebugOutput(true);
   Serial.println();
-
   Serial.println("Running...");
-  delay(3000);
 
-  // Initialize sensor
-  while (!particleSensor.begin(Wire, I2C_SPEED_FAST)) //Use default I2C port, 400kHz speed
-  {
-    Serial.println("MAX30102 was not found. Please check wiring/power/solder jumper at MH-ET LIVE MAX30102 board. ");
-    //while (1);
+  // OLED initialization
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    Serial.println(F("SSD1306 allocation failed"));
+    while (1);
+  }
+  display.clearDisplay();
+  display.setTextSize(2);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0,0);
+  display.println("PulseOx");
+  display.display();
+  delay(2000);
+  display.clearDisplay();
+
+  // Initialize MAX30102 sensor
+  while (!particleSensor.begin(Wire, I2C_SPEED_FAST)) {
+    Serial.println("MAX30102 not found. Check wiring.");
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setCursor(0,0);
+    display.println("MAX30102 not found");
+    display.display();
+    delay(2000);
   }
 
-  //Setup to sense a nice looking saw tooth on the plotter
-  byte ledBrightness = 0x7F; //Options: 0=Off to 255=50mA
-  byte sampleAverage = 4; //Options: 1, 2, 4, 8, 16, 32
-  byte ledMode       = 2; //Options: 1 = Red only, 2 = Red + IR, 3 = Red + IR + Green
-  //Options: 1 = IR only, 2 = Red + IR on MH-ET LIVE MAX30102 board
-  int sampleRate     = 200; //Options: 50, 100, 200, 400, 800, 1000, 1600, 3200
-  int pulseWidth     = 411; //Options: 69, 118, 215, 411
-  int adcRange       = 16384; //Options: 2048, 4096, 8192, 16384
-  
-  // Set up the wanted parameters
-  particleSensor.setup(ledBrightness, sampleAverage, ledMode, sampleRate, pulseWidth, adcRange); //Configure sensor with these settings
-
+  byte ledBrightness = 0x7F;
+  byte sampleAverage = 4;
+  byte ledMode = 2;
+  int sampleRate = 200;
+  int pulseWidth = 411;
+  int adcRange = 16384;
+  particleSensor.setup(ledBrightness, sampleAverage, ledMode, sampleRate, pulseWidth, adcRange);
   particleSensor.enableDIETEMPRDY();
 }
 
-void loop()
-{
-
-  uint32_t ir, red, green;
+void loop() {
+  uint32_t ir, red;
   double fred, fir;
-  double SpO2 = 0; //raw SpO2 before low pass filtered
-  
-#ifdef USEFIFO
-  particleSensor.check(); //Check the sensor, read up to 3 samples
+  double SpO2 = 0;
 
-  while (particleSensor.available()) {//do we have new data
-  red = particleSensor.getFIFORed();
-  ir  = particleSensor.getFIFOIR();
+#ifdef USEFIFO
+  particleSensor.check(); // Read up to 3 samples
+
+  while (particleSensor.available()) {
+    red = particleSensor.getFIFORed();
+    ir  = particleSensor.getFIFOIR();
 #endif
-   
+
     i++;
     fred = (double)red;
     fir  = (double)ir;
-    avered = avered * frate + (double)red * (1.0 - frate); //average red level by low pass filter
-    aveir = aveir * frate + (double)ir * (1.0 - frate); //average IR level by low pass filter
-    sumredrms += (fred - avered) * (fred - avered); //square sum of alternate component of red level
-    sumirrms += (fir - aveir) * (fir - aveir);//square sum of alternate component of IR level
-    if ((i % SAMPLING) == 0) {//slow down graph plotting speed for arduino Serial plotter by thin out
+    avered = avered * frate + (double)red * (1.0 - frate);
+    aveir = aveir * frate + (double)ir * (1.0 - frate);
+    sumredrms += (fred - avered) * (fred - avered);
+    sumirrms += (fir - aveir) * (fir - aveir);
+
+    if ((i % SAMPLING) == 0) {
       if ( millis() > TIMETOBOOT) {
-        float ir_forGraph = (2.0 * fir - aveir) / aveir * SCALE;
-        float red_forGraph = (2.0 * fred - avered) / avered * SCALE;
-        //truncation for Serial plotter's autoscaling
-        if ( ir_forGraph > 100.0) ir_forGraph = 100.0;
-        if ( ir_forGraph < 80.0) ir_forGraph = 80.0;
-        if ( red_forGraph > 100.0 ) red_forGraph = 100.0;
-        if ( red_forGraph < 80.0 ) red_forGraph = 80.0;
-        // Print out red and IR sensor reading to serial interface for monitoring...
-        Serial.print("Red: "); Serial.print(red); Serial.print(","); Serial.print("Infrared: "); Serial.print(ir); Serial.print(".    ");
-        float temperature = particleSensor.readTemperatureF();
-        
-        if (ir < FINGER_ON){ // no finger on the sensor
-           Serial.println("No finger detected");
-           break;
+        // Serial output
+        Serial.print("Red: "); Serial.print(red); Serial.print(", ");
+        Serial.print("Infrared: "); Serial.print(ir); Serial.print(".    ");
+
+        // OLED output
+        display.clearDisplay();
+        display.setTextSize(1);
+        display.setCursor(0,0);
+
+        if (ir < FINGER_ON) {
+          Serial.println("No finger detected");
+          display.setTextSize(2);
+          display.setCursor(0,0);
+          display.println("No finger");
+          display.setCursor(0,30);
+          display.println("detected");
+        } else {
+          Serial.print("Oxygen % = ");
+          Serial.print(ESpO2);
+          Serial.println("%");
+
+          display.setTextSize(2);
+          display.setCursor(0,0);
+          display.print("SpO2:");
+          display.print(ESpO2,1);
+          display.println("%");
+          display.setTextSize(1);
+          display.setCursor(0, 35);
+          display.print("IR: "); display.println(ir);
+          display.print("Red: "); display.println(red);
         }
-        if(ir > FINGER_ON){
-           //Temperature = mlx.readObjectTempC();
-           Serial.print("Oxygen % = ");
-           Serial.print(ESpO2);
-           Serial.println("%");
-        }
+        display.display();
       }
     }
+
     if ((i % Num) == 0) {
       double R = (sqrt(sumredrms) / avered) / (sqrt(sumirrms) / aveir);
-      // Serial.println(R);
       Serial.print("R = ");
       Serial.println(R);
       SpO2 = -45.060 * R * R + 30.354 * R + 94.845;
-      //SpO2 = -23.3 * (R - 0.4) + 100; //http://ww1.microchip.com/downloads/jp/AppNotes/00001525B_JP.pdf -- I don't see this directly in the App Note... look here https://github.com/espressif/arduino-esp32/issues/4561
-      ESpO2 = FSpO2 * ESpO2 + (1.0 - FSpO2) * SpO2;//low pass filter
-      //  Serial.print(SpO2);Serial.print(",");Serial.println(ESpO2);
+      ESpO2 = FSpO2 * ESpO2 + (1.0 - FSpO2) * SpO2;
       sumredrms = 0.0; sumirrms = 0.0; i = 0;
       break;
     }
-    particleSensor.nextSample(); //We're finished with this sample so move to next sample
-   // Serial.println(SpO2);
+    particleSensor.nextSample();
   }
-
-
 }
-
-
